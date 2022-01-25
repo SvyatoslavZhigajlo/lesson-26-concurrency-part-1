@@ -7,6 +7,7 @@ public class CounterChange implements Runnable {
     private final CountDownLatch downLatch;
 
 
+
     public CounterChange (AtomicInteger counter, CountDownLatch downLatch) {
         this.counter = counter;
         this.downLatch = downLatch;

@@ -61,21 +61,39 @@ public class Main {
     private void singleton() {
         ExecutorService executor = Executors.newCachedThreadPool();
 //        CountDownLatch doneSignal = new CountDownLatch(2000);
-
-
     }
 
     private void deadlock() {
-        DeadlockResourceA resourceA = new DeadlockResourceA();
-        DeadlockResourceB resourceB = new DeadlockResourceB();
-        resourceA.resourceB = resourceB;
-        resourceB.resourceA = resourceA;
-        Thread_1_Deadlock thread_1 = new Thread_1_Deadlock();
-        Thread_2_Deadlock thread_2 = new Thread_2_Deadlock();
-        thread_1.resourceA = resourceA;
-        thread_2.resourceB = resourceB;
-        thread_1.start();
-        thread_2.start();
+        Student lock1 = new Student();
+        Student lock2 = new Student();
+
+        Thread thread1 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " start");
+            synchronized (lock1) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized (lock2) {
+                }
+            }
+            System.out.println(Thread.currentThread().getName() + " end");
+        }, "Thread1");
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " start");
+            synchronized (lock2) {
+                synchronized (lock1) {
+
+                }
+            }
+            System.out.println(Thread.currentThread().getName() + " end");
+        }, "Thread2");
+
+        thread1.start();
+        thread2.start();
+
     }
 
 }
